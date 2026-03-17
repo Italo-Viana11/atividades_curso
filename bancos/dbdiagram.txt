@@ -1,0 +1,106 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+table material {
+  id uuid [pk]
+  nome_item varchar [not null]
+  id_catalogo uuid [ref:> catalogo.id]
+  peso int [not null]
+}
+
+Table catalogo {
+  id uuid [pk]
+  nome varchar [not null]
+  telefone varchar 
+  email varchar
+}
+
+table Cliente{
+id uuid [pk]
+nome varchar [not null]
+telefone varchar 
+cpf varchar [unique]
+email varchar 
+}
+
+table itens {
+  id uuid [pk]
+  numero_item varchar [not null]
+  tipo_item varchar 
+  peso varchar
+}
+
+table pedidos {
+  id uuid [pk]
+  quantidade int [not null]
+  item_escolhido varchar [not null]
+  peso_pedido varchar [not null]
+  cliente_id varchar
+  data_pedido datetime
+}
+
+table item_pedidos {
+  id uuid [pk]
+  id_pedidos uuid [ref: > pedidos.id]
+  id_cliente uuid [ref: > Cliente.id]
+  id_itens uuid [ref: > itens.id]
+}
+
+table combo {
+  id uuid [pk]
+  nome varchar [not null]
+}
+
+table combo_itens {
+  id uuid [pk]
+  id_material uuid [ref:> material.id]
+  id_combo uuid [ref:> combo.id]
+  qntd int [not null]
+}
+
+table caminhoes {
+  id uuid [pk]
+  placa varchar [not null,unique]
+  cor varchar [not null]
+  limite_peso varchar [not null]
+}
+
+Table motorista {
+  id uuid [pk]
+  nome varchar 
+  CNH varchar [not null,unique]
+  cpf varchar [not null]
+}
+
+table entrega {
+  id uuid [pk]
+  id_demanda uuid [ref :> itens.id]
+  id_motorista uuid [ref:> motorista.id]
+  id_caminhao uuid [ref:> caminhoes.id]
+  data_entrega datetime [not null]
+}
+
+table manutencao {
+  id uuid [pk]
+  id_material uuid [ref: > catalogo.id]
+  data_inicio datetime
+  data_fim datetime
+  custo decimal
+  descricao varchar
+}
+
+table pagamento {
+  id uuid [pk]
+  id_pedido uuid [ref :> pedidos.id]
+  valor_total decimal [not null]
+}
+
+table parcela {
+  id uuid [pk]
+  id_pagamento uuid [ref:> pagamento.id]
+  quantidade_parcelas int [not null]
+  data_vencimento datetime [not null]
+  data_pagamento datetime [not null]
+}
+
+
+Ref: "catalogo"."email" < "catalogo"."nome"
